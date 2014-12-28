@@ -1,0 +1,26 @@
+﻿<Page
+    x:Class="Superlamp.Views.InsertNameView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Superlamp.Views"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    DataContext="{Binding VMInsertName, Source={StaticResource Locator}}">
+
+    <StackPanel Margin="12">
+        <TextBlock Text="Hello!" Margin="24 48" HorizontalAlignment="Center"
+                   FontSize="50" FontWeight="Light"/>
+
+        <TextBlock Text="plz, type your name" Margin="24" 
+                   HorizontalAlignment="Center"
+                   FontSize="32" FontWeight="Light"/>
+
+        <TextBox Header="" Margin="24"/>
+
+        <AppBarButton Icon="Accept" HorizontalAlignment="Center"
+                      Margin="24" Command="{Binding DoAccept}"
+                      IsEnabled="{Binding Name, Converter={StaticResource StringToBool}}"/>
+    </StackPanel>
+</Page>
