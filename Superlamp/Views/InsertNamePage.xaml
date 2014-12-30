@@ -1,5 +1,5 @@
 ﻿<Page
-    x:Class="Superlamp.Views.InsertNameView"
+    x:Class="Superlamp.Views.InsertNamePage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Superlamp.Views"
@@ -17,10 +17,10 @@
                    HorizontalAlignment="Center"
                    FontSize="32" FontWeight="Light"/>
 
-        <TextBox Header="" Margin="24"/>
+        <TextBox Header="" Margin="24" Text="{Binding Name, Mode=TwoWay}"/>
 
         <AppBarButton Icon="Accept" HorizontalAlignment="Center"
                       Margin="24" Command="{Binding DoAccept}"
-                      IsEnabled="{Binding Name, Converter={StaticResource StringToBool}}"/>
+                      IsEnabled="{Binding Name, Mode=OneWay, Converter={StaticResource StringToBool}}"/>
     </StackPanel>
 </Page>

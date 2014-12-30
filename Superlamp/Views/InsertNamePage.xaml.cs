@@ -20,9 +20,9 @@ namespace Superlamp.Views
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class MapView : Page
+    public sealed partial class InsertNamePage : Page
     {
-        public MapView()
+        public InsertNamePage()
         {
             this.InitializeComponent();
         }

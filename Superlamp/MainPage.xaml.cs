@@ -1,5 +1,6 @@
 ﻿using GalaSoft.MvvmLight.Messaging;
 using GalaSoft.MvvmLight.Views;
+using Superlamp.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -27,9 +28,16 @@ namespace Superlamp
         public MainPage()
         {
             this.InitializeComponent();
-
             this.NavigationCacheMode = NavigationCacheMode.Required;
+            this.Loaded += MainPage_Loaded;
         }
+
+        private void MainPage_Loaded(object sender, RoutedEventArgs e)
+        {
+            MainViewModel vm = this.DataContext as MainViewModel;
+            vm.Initialize();
+        }
+
 
         /// <summary>
         /// Invoked when this page is about to be displayed in a Frame.

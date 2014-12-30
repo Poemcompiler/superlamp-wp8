@@ -12,10 +12,10 @@
   See http://www.galasoft.ch/mvvm
 */
 
-using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Ioc;
 using GalaSoft.MvvmLight.Views;
 using Microsoft.Practices.ServiceLocation;
+using Superlamp.Services;
 using Superlamp.Views;
 
 namespace Superlamp.ViewModel
@@ -24,8 +24,9 @@ namespace Superlamp.ViewModel
     /// This class contains static references to all the view models in the
     /// application and provides an entry point for the bindings.
     /// </summary>
-    public class ViewModelLocator
+    public sealed class ViewModelLocator
     {
+        static readonly object padlock = new object();
         /// <summary>
         /// Initializes a new instance of the ViewModelLocator class.
         /// </summary>
@@ -33,21 +34,22 @@ namespace Superlamp.ViewModel
         {
             ServiceLocator.SetLocatorProvider(() => SimpleIoc.Default);
 
-            var navigationService = this.CreateNavigationService();
-            SimpleIoc.Default.Register<INavigationService>(() => navigationService);
-            SimpleIoc.Default.Register<IDialogService, DialogService>();
-
             SimpleIoc.Default.Register<MainViewModel>();
             SimpleIoc.Default.Register<MapViewModel>();
             SimpleIoc.Default.Register<InsertNameViewModel>();
+
+            var navigationService = this.CreateNavigationService();
+            SimpleIoc.Default.Register<IDataService, DataService>();
+            SimpleIoc.Default.Register<INavigationService>(() => navigationService);
+            SimpleIoc.Default.Register<IDialogService, DialogService>();
         }
 
         private INavigationService CreateNavigationService()
         {
             var navigationService = new NavigationService();
             navigationService.Configure("VMain", typeof(MainPage));
-            navigationService.Configure("VMap", typeof(MapView));
-            navigationService.Configure("VInsertName", typeof(InsertNameView));
+            navigationService.Configure("VMap", typeof(MapPage));
+            navigationService.Configure("VInsertName", typeof(InsertNamePage));
             return navigationService;
         }
 
@@ -55,6 +57,7 @@ namespace Superlamp.ViewModel
         {
             get
             {
+                lock(padlock)
                 return ServiceLocator.Current.GetInstance<MainViewModel>();
             }
         }
@@ -63,6 +66,7 @@ namespace Superlamp.ViewModel
         {
             get
             {
+                lock(padlock)
                 return ServiceLocator.Current.GetInstance<MapViewModel>();
             }
         }
@@ -71,6 +75,7 @@ namespace Superlamp.ViewModel
         {
             get
             {
+                lock(padlock)
                 return ServiceLocator.Current.GetInstance<InsertNameViewModel>();
             }
         }

@@ -34,7 +34,7 @@ namespace Superlamp.ViewModel
             set
             {
                 _name = value;
-                RaisePropertyChanged("Name");
+                RaisePropertyChanged(() => Name);
             }
         }
 

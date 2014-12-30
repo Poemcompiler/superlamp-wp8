@@ -1,5 +1,6 @@
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Views;
+using Superlamp.Views;
 
 namespace Superlamp.ViewModel
 {
@@ -10,22 +11,19 @@ namespace Superlamp.ViewModel
         public MainViewModel(INavigationService navigationService)
         {
             this.navigationService = navigationService;
+        }
 
+        public void Initialize()
+        {
             var localSettings = Windows.Storage.ApplicationData.Current.LocalSettings;
-            string uri = "";
+            string url = "";
             if (localSettings.Values.ContainsKey("Name"))
-            {
                 // TODO navigate mapView
-                uri = "VMap";
-
-            }
+                url = "VMap";
             else
-            {
                 // TODO navigate insertNameView
-                uri = "VInsertName";
-            }
-
-            navigationService.NavigateTo(uri);
+                url = "VInsertName";
+            navigationService.NavigateTo(url);
         }
     }
 }
