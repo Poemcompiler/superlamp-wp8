@@ -10,12 +10,12 @@
     DataContext="{Binding VMMap, Source={StaticResource Locator}}">
 
     <Grid>
-        <Maps:MapControl />
+        <Maps:MapControl x:Name="xMap" ZoomLevel="7" ColorScheme="Dark"/>
         
-        <Grid VerticalAlignment="Bottom" Height="75" Background="Black"/>
-        <AppBarToggleButton HorizontalAlignment="Center" Icon="Like" IsCompact="True" 
+        <AppBarToggleButton HorizontalAlignment="Center" Icon="Emoji2" IsCompact="True" 
                             VerticalAlignment="Bottom" RenderTransformOrigin="0.5,0.5"
-                            Margin="0,0,0,64">
+                            Command="{Binding ChangeLight, Mode=TwoWay}"
+                            Margin="0,0,0,64" RequestedTheme="Light">
             <AppBarToggleButton.RenderTransform>
                 <CompositeTransform ScaleX="3" ScaleY="3"/>
             </AppBarToggleButton.RenderTransform>

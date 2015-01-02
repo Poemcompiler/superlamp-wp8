@@ -40,8 +40,9 @@ namespace Superlamp.ViewModel
 
             var navigationService = this.CreateNavigationService();
             SimpleIoc.Default.Register<IDataService, DataService>();
-            SimpleIoc.Default.Register<INavigationService>(() => navigationService);
             SimpleIoc.Default.Register<IDialogService, DialogService>();
+            SimpleIoc.Default.Register<IGeolocationService, GeolocationService>();
+            SimpleIoc.Default.Register<INavigationService>(() => navigationService);
         }
 
         private INavigationService CreateNavigationService()
@@ -57,8 +58,8 @@ namespace Superlamp.ViewModel
         {
             get
             {
-                lock(padlock)
-                return ServiceLocator.Current.GetInstance<MainViewModel>();
+                lock (padlock)
+                    return ServiceLocator.Current.GetInstance<MainViewModel>();
             }
         }
 
@@ -66,8 +67,8 @@ namespace Superlamp.ViewModel
         {
             get
             {
-                lock(padlock)
-                return ServiceLocator.Current.GetInstance<MapViewModel>();
+                lock (padlock)
+                    return ServiceLocator.Current.GetInstance<MapViewModel>();
             }
         }
 
@@ -75,8 +76,8 @@ namespace Superlamp.ViewModel
         {
             get
             {
-                lock(padlock)
-                return ServiceLocator.Current.GetInstance<InsertNameViewModel>();
+                lock (padlock)
+                    return ServiceLocator.Current.GetInstance<InsertNameViewModel>();
             }
         }
 
