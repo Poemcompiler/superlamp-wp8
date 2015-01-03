@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.Storage.Streams;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Maps;
@@ -39,11 +40,12 @@ namespace Superlamp.Views
         /// </summary>
         /// <param name="e">Event data that describes how this page was reached.
         /// This parameter is typically used to configure the page.</param>
-        protected override void OnNavigatedTo(NavigationEventArgs e)
+        protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
+            await vm.StartMap();
         }
 
-        protected void vm_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        void vm_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "MyPoint")
             {
@@ -105,24 +107,20 @@ namespace Superlamp.Views
                 story.Children.Add(opacityAnimation);
                 story.Children.Add(heightAnimation);
                 story.Children.Add(widthAnimation);
-                story.Begin();
+                //story.Begin();
 
+                xMap.Children.Add(grid);
+                MapControl.SetLocation(grid, vm.MyPoint);
+                MapControl.SetNormalizedAnchorPoint(grid, new Point(0.5, 0.5));
 
-                MapIcon mapIcon = new MapIcon { Location = vm.MyPoint, Title = "You" };
-                xMap.MapElements.Add(mapIcon);
-
-                //// Create a MapOverlay to contain the circle.
-                //MapOverlay myLocationOverlay = new MapOverlay();
-                //myLocationOverlay.Content = grid;
-                //myLocationOverlay.PositionOrigin = new Point(0.5, 0.5);
-                //myLocationOverlay.GeoCoordinate = new System.Device.Location.GeoCoordinate((vm as MapViewModel).Latitude, (vm as MapViewModel).Longitude);
-
-                //// Create a MapLayer to contain the MapOverlay.
-                //MapLayer myLocationLayer = new MapLayer();
-                //myLocationLayer.Add(myLocationOverlay);
-
-                //// Add the MapLayer to the Map.
-                //xMap.Layers.Add(myLocationLayer);
+                //MapIcon mapIcon = new MapIcon
+                //{
+                //    Image = RandomAccessStreamReference.CreateFromUri(new Uri("ms-appx:///Assets/yellow_light.png")),
+                //    Location = vm.MyPoint,
+                //    NormalizedAnchorPoint = new Point(0.5, 0.5),
+                //    Title = "You"
+                //};
+                //xMap.MapElements.Add(mapIcon);
             }
         }
     }

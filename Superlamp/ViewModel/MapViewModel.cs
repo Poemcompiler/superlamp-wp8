@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using Windows.Devices.Enumeration;
 using Windows.Devices.Geolocation;
 using Windows.Foundation;
 using Windows.Media.Capture;
@@ -17,6 +18,7 @@ namespace Superlamp.ViewModel
 {
     public class MapViewModel : ViewModelBase
     {
+        MediaCapture mc = null;
         private IGeolocationService geolocationService;
         private IDialogService dialogService;
         private bool _hasLocation;
@@ -54,22 +56,39 @@ namespace Superlamp.ViewModel
         {
             _changeLight = new RelayCommand(async () =>
             {
-                var mediaDev = new MediaCapture();
-                await mediaDev.InitializeAsync();
-                var videoDev = mediaDev.VideoDeviceController;
+                if (mc == null)
+                {
+                    mc = new MediaCapture();
+                    var cameraId = await GetCameraId(Windows.Devices.Enumeration.Panel.Back);
+
+                    var settings = new MediaCaptureInitializationSettings { VideoDeviceId = cameraId.Id };
+                    settings.StreamingCaptureMode = StreamingCaptureMode.Video;
+
+                    await mc.InitializeAsync(settings);
+                }
+                var videoDev = mc.VideoDeviceController;
                 var tc = videoDev.TorchControl;
                 if (tc.Supported)
                 {
                     if (tc.PowerSupported)
                         tc.PowerPercent = 100;
-                    tc.Enabled = true;
+                    tc.Enabled = !tc.Enabled;
                 }
             });
         }
 
-        public void StartMap()
+        private static async Task<DeviceInformation> GetCameraId(Windows.Devices.Enumeration.Panel desiredCamera)
         {
+            DeviceInformation deviceID = (await DeviceInformation.FindAllAsync(DeviceClass.VideoCapture))
+                .FirstOrDefault(x => x.EnclosureLocation != null && x.EnclosureLocation.Panel == desiredCamera);
 
+            if (deviceID != null) return deviceID;
+            else throw new Exception(string.Format("Camera of type {0} doesn't exist.", desiredCamera));
+        }
+
+        public async Task StartMap()
+        {
+            await GetLocation();
         }
 
         /// <summary>
@@ -91,7 +110,7 @@ namespace Superlamp.ViewModel
                 else
                     errorString = "cantGetLocation";
             }
-            if (string.IsNullOrEmpty(errorString))
+            if (!string.IsNullOrEmpty(errorString))
                 await dialogService.ShowMessage(errorString, "title");
         }
     }
