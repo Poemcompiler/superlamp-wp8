@@ -1,18 +1,18 @@
 ﻿using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Views;
+using Newtonsoft.Json;
+using Superlamp.Model;
 using Superlamp.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.Devices.Enumeration;
 using Windows.Devices.Geolocation;
-using Windows.Foundation;
 using Windows.Media.Capture;
-using Windows.UI.Xaml.Controls.Maps;
 
 namespace Superlamp.ViewModel
 {
@@ -21,7 +21,6 @@ namespace Superlamp.ViewModel
         MediaCapture mc = null;
         private IGeolocationService geolocationService;
         private IDialogService dialogService;
-        private bool _hasLocation;
         private Geopoint _myPoint;
         private RelayCommand _changeLight;
 
@@ -73,6 +72,11 @@ namespace Superlamp.ViewModel
                     if (tc.PowerSupported)
                         tc.PowerPercent = 100;
                     tc.Enabled = !tc.Enabled;
+
+                    if (tc.Enabled)
+                    {
+                        // make flashlight visible
+                    }
                 }
             });
         }
@@ -88,14 +92,15 @@ namespace Superlamp.ViewModel
 
         public async Task StartMap()
         {
-            await GetLocation();
+            await GetCurrentLocation();
+            await GetOtherLocations();
         }
 
         /// <summary>
         /// Gets current location
         /// </summary>
         /// <returns></returns>
-        async Task GetLocation()
+        async Task GetCurrentLocation()
         {
             String errorString = String.Empty;
             try
@@ -112,6 +117,21 @@ namespace Superlamp.ViewModel
             }
             if (!string.IsNullOrEmpty(errorString))
                 await dialogService.ShowMessage(errorString, "title");
+        }
+
+        /// <summary>
+        /// Gets other superlamp user locations
+        /// </summary>
+        /// <returns></returns>
+        public async Task GetOtherLocations()
+        {
+            System.Net.Http.HttpClient client = new System.Net.Http.HttpClient();
+
+            HttpRequestMessage request = new HttpRequestMessage(HttpMethod.Get, "http://superlamp.azurewebsites.net/getpositions.php");
+
+            HttpResponseMessage response = await client.SendAsync(request);
+            string data = await response.Content.ReadAsStringAsync();
+            List<FlashLight> light = JsonConvert.DeserializeObject<List<FlashLight>>(data);
         }
     }
 }
